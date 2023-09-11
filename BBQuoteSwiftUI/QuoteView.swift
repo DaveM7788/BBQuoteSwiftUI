@@ -12,6 +12,8 @@ struct QuoteView: View {
     @StateObject private var viewModel = ViewModel(controller: FetchController())
     let show: String
     
+    @State private var showCharacterInfo = false
+    
     var body: some View {
         GeometryReader { geo in
             ZStack {
@@ -36,12 +38,6 @@ struct QuoteView: View {
                                 .minimumScaleFactor(0.5)
                             
                             ZStack(alignment: .bottom) {
-                                /*
-                                 Image("jessepinkman")
-                                 .resizable()
-                                 .scaledToFill()
-                                 */
-                                
                                 AsyncImage(url: data.character.images[0]) { image in
                                     image
                                         .resizable()
@@ -50,6 +46,12 @@ struct QuoteView: View {
                                     ProgressView()
                                 }
                                 .frame(width: geo.size.width / 1.1, height: geo.size.height / 1.8)
+                                .onTapGesture {
+                                    showCharacterInfo.toggle()
+                                }
+                                .sheet(isPresented: $showCharacterInfo) {
+                                    CharacterView(show: show, character: data.character)
+                                }
                                 
                                 Text(data.quote.character)
                                     .foregroundColor(.white)
